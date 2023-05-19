@@ -91,6 +91,8 @@ class NBUExchange(ExchangeBase):
         for rate in r:
             if rate["cc"] == self.currency_a:
                 self.pair = SellBuy(float(rate["rate"]), float(rate["rate"]))
+            elif self.currency_a == "UAH" and rate["cc"] == self.currency_b:
+                self.pair = SellBuy(float(rate["rate"]), float(rate["rate"]))
 
 
 class CurrencyAPIExchange(ExchangeBase):
@@ -102,4 +104,6 @@ class CurrencyAPIExchange(ExchangeBase):
         r = r.json()
         for rate in r["data"]:
             if rate == self.currency_b:
-                self.pair = SellBuy(float(r["data"][rate]['value']), float(r["data"][rate]['value']))
+                self.pair = SellBuy(
+                    float(r["data"][rate]["value"]), float(r["data"][rate]["value"])
+                )
