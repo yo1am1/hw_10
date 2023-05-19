@@ -46,9 +46,9 @@ def test_vkurse_rate():
         "http://vkurse.dp.ua/course.json",
         json=mocked_response,
     )
-    e = VkurseExchange("vkurse", "UAH", "Dollar")
+    e = VkurseExchange("vkurse", "USD", "UAH")
     e.get_rate()
-    assert e.pair.sell == 37.60
+    assert e.pair.sell == 37.40
 
 
 def test_nbu_rate():
