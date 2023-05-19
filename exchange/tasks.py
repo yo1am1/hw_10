@@ -1,7 +1,7 @@
 import datetime
 
 from .models import Rate
-from .exchange_provider import MonoExchange, PrivatExchange, VkurseExchange
+from .exchange_provider import MonoExchange, PrivatExchange, VkurseExchange, NBUExchange, CurrencyAPIExchange
 
 from celery import shared_task
 
@@ -22,6 +22,14 @@ def start_exchange(vendor, currency_a, currency_b):
         exchange = PrivatExchange(vendor, currency_a, currency_b)
     elif vendor == "mono":
         exchange = MonoExchange(vendor, currency_a, currency_b)
+    elif vendor == "vkurse":
+        exchange = VkurseExchange(vendor, currency_a, currency_b)
+    elif vendor == "nbu":
+        exchange = NBUExchange(vendor, currency_a, currency_b)
+    elif vendor == "currencyapi":
+        exchange = CurrencyAPIExchange(vendor, currency_a, currency_b)
+    else:
+        raise ValueError(f"Unknown vendor {vendor}")
     exchange.get_rate()
     Rate.objects.get_or_create(
         date=current_date,

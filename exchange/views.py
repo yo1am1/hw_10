@@ -42,17 +42,16 @@ def add_param(request):
 
 def vkurse(request):
     r = requests.get("https://vkurse.dp.ua/course.json")
-    answer_1 = r.json()["Dollar"]
-    answer_2 = r.json()["Euro"]
+    answer = r.json()
 
     return JsonResponse(
-        {"Dollar": answer_1, "Euro": answer_2}, encoder=DecimalAsFloatJSONEncoder
+         answer, encoder=DecimalAsFloatJSONEncoder
     )
 
 
 def currencyapi(request):
     client = currencyapicom.Client("YQeLH52G55DlV361wbi6Vs1cDj3Jg0TG2KTSBIG6")
-    result = client.latest(currencies=["USD", "EUR", "UAH"])
+    result = client.latest()
 
     return JsonResponse(result, encoder=DecimalAsFloatJSONEncoder)
 
@@ -61,9 +60,8 @@ def nbu(request):
     r = requests.get(
         "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"
     )
-    answer_1 = r.json()[24]
-    answer_2 = r.json()[33]
+    answer = r.json()
 
     return JsonResponse(
-        {"USD": answer_1, "EUR": answer_2}, encoder=DecimalAsFloatJSONEncoder
+        answer, encoder=DecimalAsFloatJSONEncoder, safe=False
     )
