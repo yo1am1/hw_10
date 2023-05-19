@@ -67,13 +67,19 @@ class VkurseExchange(ExchangeBase):
         for rate in r:
             if rate == "Dollar":
                 self.currency_a = "USD"
+                d_buy = float(r["Dollar"]["buy"])
+                d_sale = float(r["Dollar"]["sale"])
+                self.pair = SellBuy(d_buy, d_sale)
+
+            elif rate == self.currency_a and rate == "Euro":
+                self.currency_a = "EUR"
 
                 buy = float(r["Dollar"]["buy"])
                 sale = float(r["Dollar"]["sale"])
+
                 self.pair = SellBuy(sale, buy)
 
-            elif rate == "Euro":
-                self.currency_a = "EUR"
+            elif rate == self.currency_a:
 
                 buy = float(r["Dollar"]["buy"])
                 sale = float(r["Dollar"]["sale"])
@@ -91,8 +97,8 @@ class NBUExchange(ExchangeBase):
         for rate in r:
             if rate["cc"] == self.currency_a:
                 self.pair = SellBuy(float(rate["rate"]), float(rate["rate"]))
-            elif self.currency_a == "UAH" and rate["cc"] == self.currency_b:
-                self.pair = SellBuy(float(rate["rate"]), float(rate["rate"]))
+            elif self.currency_a == 'UAH' and rate["cc"] == self.currency_b:
+                self.pair = SellBuy(1 / float(rate["rate"]), 1 / float(rate["rate"]))
 
 
 class CurrencyAPIExchange(ExchangeBase):
