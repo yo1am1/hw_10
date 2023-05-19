@@ -1,9 +1,14 @@
 import datetime
 import decimal
 
+import currencyapicom
+import requests
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import reverse
 
+from .forms import RateForm
 from .models import Rate
 
 
@@ -14,12 +19,51 @@ class DecimalAsFloatJSONEncoder(DjangoJSONEncoder):
         return super().default(o)
 
 
-# Create your views here.
-
-
 def index(request):
     current_date = datetime.date.today()
     current_rates = Rate.objects.filter(date=current_date).all().values()
     return JsonResponse(
         {"current_rates": list(current_rates)}, encoder=DecimalAsFloatJSONEncoder
+    )
+
+
+def add_param(request):
+    if request.method == "POST":
+        form = RateForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse("add_param"))
+        else:
+            form = RateForm()
+        context = {"form": form}
+        return render(request, "exchange_form.html", context)
+
+
+def vkurse(request):
+    r = requests.get("https://vkurse.dp.ua/course.json")
+    answer_1 = r.json()["Dollar"]
+    answer_2 = r.json()["Euro"]
+
+    return JsonResponse(
+        {"Dollar": answer_1, "Euro": answer_2}, encoder=DecimalAsFloatJSONEncoder
+    )
+
+
+def currencyapi(request):
+    client = currencyapicom.Client("YQeLH52G55DlV361wbi6Vs1cDj3Jg0TG2KTSBIG6")
+    result = client.latest(currencies=["USD", "EUR", "UAH"])
+
+    return JsonResponse(result, encoder=DecimalAsFloatJSONEncoder)
+
+
+def nbu(request):
+    r = requests.get(
+        "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"
+    )
+    answer_1 = r.json()[24]
+    answer_2 = r.json()[33]
+
+    return JsonResponse(
+        {"USD": answer_1, "EUR": answer_2}, encoder=DecimalAsFloatJSONEncoder
     )

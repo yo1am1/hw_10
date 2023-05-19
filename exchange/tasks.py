@@ -1,7 +1,7 @@
 import datetime
 
 from .models import Rate
-from .exchange_provider import MonoExchange, PrivatExchange
+from .exchange_provider import MonoExchange, PrivatExchange, VkurseExchange
 
 from celery import shared_task
 

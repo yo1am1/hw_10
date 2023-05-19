@@ -57,3 +57,36 @@ class PrivatExchange(ExchangeBase):
         for rate in r.json():
             if rate["ccy"] == self.currency_a and rate["base_ccy"] == self.currency_b:
                 self.pair = SellBuy(float(rate["sale"]), float(rate["buy"]))
+
+
+class VkurseExchange(ExchangeBase):
+    def get_rate(self):
+        r = requests.get("http://vkurse.dp.ua/course.json")
+        r.raise_for_status()
+        for rate in r.json():
+            for i in range(len(rate)):
+                if self.currency_a == "USD" and rate[i] == self.currency_b:
+                    self.pair = SellBuy(float(rate["sale"]), float(rate["buy"]))
+                elif rate[i] == self.currency_b and rate[i] == self.currency_a:
+                    self.pair = SellBuy(float(rate["buy"]), float(rate["sale"]))
+
+
+# class VkurseExchange(ExchangeBase):
+#     def get_rate(self):
+#         r = requests.get("http://vkurse.dp.ua/course.json")
+#         r.raise_for_status()
+#         for rate in r.json():
+#             for i in range(len(rate)):
+#                 if rate[i] == self.currency_:
+#                     self.pair = SellBuy(float(rate["sale"]), float(rate["buy"]))
+#
+#
+# class CurrencyApiExchange(ExchangeBase):
+#     def get_rate(self):
+#         r = requests.get(
+#             "https://api.currencyapi.com/v3/latest?apikey=YQeLH52G55DlV361wbi6Vs1cDj3Jg0TG2KTSBIG6&currencies=EUR%2CUSD%2CUAH"
+#         )["data"]
+#         r.raise_for_status()
+#         for rate in r.json():
+#             if rate["ccy"] == self.currency_a and rate["base_ccy"] == self.currency_b:
+#                 self.pair = SellBuy(float(rate["sale"]), float(rate["buy"]))
