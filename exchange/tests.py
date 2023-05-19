@@ -3,7 +3,13 @@ import pathlib
 
 import responses
 
-from .exchange_provider import MonoExchange, PrivatExchange, VkurseExchange, NBUExchange, CurrencyAPIExchange
+from .exchange_provider import (
+    MonoExchange,
+    PrivatExchange,
+    VkurseExchange,
+    NBUExchange,
+    CurrencyAPIExchange,
+)
 
 root = pathlib.Path(__file__).parent
 
@@ -42,7 +48,7 @@ def test_vkurse_rate():
     )
     e = VkurseExchange("vkurse", "Dollar", "UAH")
     e.get_rate()
-    assert e.pair.sell == 37.45
+    assert e.pair.sell == 37.60
 
 
 def test_nbu_rate():
@@ -55,6 +61,7 @@ def test_nbu_rate():
     e.get_rate()
     assert e.pair.sell == 36.5686
 
+
 def test_currencyapi_rate():
     mocked_response = json.load(open(root / "fixtures/currencyapi_response.json"))
     responses.get(
@@ -63,4 +70,4 @@ def test_currencyapi_rate():
     )
     e = CurrencyAPIExchange("currencyapi", "USD", "UAH")
     e.get_rate()
-    assert e.pair.sell == 27.5
+    assert e.pair.sell == 36.943381

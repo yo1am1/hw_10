@@ -44,9 +44,7 @@ def vkurse(request):
     r = requests.get("https://vkurse.dp.ua/course.json")
     answer = r.json()
 
-    return JsonResponse(
-         answer, encoder=DecimalAsFloatJSONEncoder
-    )
+    return JsonResponse(answer, encoder=DecimalAsFloatJSONEncoder)
 
 
 def currencyapi(request):
@@ -62,6 +60,4 @@ def nbu(request):
     )
     answer = r.json()
 
-    return JsonResponse(
-        answer, encoder=DecimalAsFloatJSONEncoder, safe=False
-    )
+    return JsonResponse(answer, encoder=DecimalAsFloatJSONEncoder, safe=False)
